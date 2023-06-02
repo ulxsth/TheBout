@@ -2,6 +2,7 @@ package com.ulxsth.thebout.models.items;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,24 @@ public abstract class GameItem {
     protected static List<String> lore = new ArrayList<>();
     protected static boolean isUnbreakable = false;
 
-    public abstract ItemStack getItemStack();
+    public static GameItem create(String name) {
+        if(name.equals("bokutou")) {
+            return new WoodenSword();
+        }
+
+        return null;
+    }
+
+    public ItemStack getItemStack(int amount) {
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(name);
+        itemMeta.setLore(lore);
+        itemMeta.setUnbreakable(isUnbreakable);
+        itemStack.setItemMeta(itemMeta);
+        itemStack.setAmount(amount);
+        return itemStack;
+    }
 
     public static String getName() {
         return name;
