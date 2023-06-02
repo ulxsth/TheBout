@@ -1,5 +1,6 @@
 package com.ulxsth.thebout;
 
+import com.ulxsth.thebout.commands.TbCommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class TheBoutPlugin extends JavaPlugin {
@@ -17,5 +18,7 @@ public final class TheBoutPlugin extends JavaPlugin {
         if(plugin == null) {
             plugin = this;
         }
+
+        getCommand("tb").setExecutor(new TbCommandExecutor());
     }
 }
