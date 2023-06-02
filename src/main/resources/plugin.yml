@@ -1,0 +1,4 @@
+name: TheBout
+version: '${version}'
+main: com.ulxsth.thebout.TheBout
+api-version: 1.19
