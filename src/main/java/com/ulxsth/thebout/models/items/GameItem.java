@@ -32,15 +32,15 @@ public abstract class GameItem {
         return itemStack;
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 
-    public static List<String> getLore() {
+    public List<String> getLore() {
         return lore;
     }
 
-    public static boolean isIsUnbreakable() {
+    public boolean isIsUnbreakable() {
         return isUnbreakable;
     }
 }
