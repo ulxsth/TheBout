@@ -5,23 +5,29 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GameItem {
     private static final TheBoutPlugin plugin = TheBoutPlugin.getInstance();
 
-    protected static Material material;
-    protected static String name;
-    protected static List<String> lore = new ArrayList<>();
-    protected static boolean isUnbreakable = false;
+    protected Material material;
+    protected String name;
+    protected List<String> lore;
+    protected boolean isUnbreakable;
+
+    public GameItem(Material material, String name, List<String> lore, boolean isUnbreakable) {
+        this.material = material;
+        this.name = name;
+        this.lore = lore;
+        this.isUnbreakable = isUnbreakable;
+    }
 
     public static GameItem create(String name) {
         if(name.equals("bokutou")) {
-            return new WoodenSword();
+            return new WeaponItem(WeaponItemEnum.WOODEN_SWORD);
         }
         if(name.equals("houtai")) {
-            return new Bandage();
+            return new HealItem(HealItemEnum.BANDAGE);
         }
 
         return null;
@@ -31,12 +37,12 @@ public abstract class GameItem {
         return getItemStack(1);
     }
 
-    public static ItemStack getItemStack(int amount) {
-        ItemStack itemStack = new ItemStack(material);
+    public ItemStack getItemStack(int amount) {
+        ItemStack itemStack = new ItemStack(this.material);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(name);
-        itemMeta.setLore(lore);
-        itemMeta.setUnbreakable(isUnbreakable);
+        itemMeta.setDisplayName(this.name);
+        itemMeta.setLore(this.lore);
+        itemMeta.setUnbreakable(this.isUnbreakable);
         itemStack.setItemMeta(itemMeta);
         itemStack.setAmount(amount);
         return itemStack;
@@ -48,14 +54,14 @@ public abstract class GameItem {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public List<String> getLore() {
-        return lore;
+        return this.lore;
     }
 
     public boolean isIsUnbreakable() {
-        return isUnbreakable;
+        return this.isUnbreakable;
     }
 }
