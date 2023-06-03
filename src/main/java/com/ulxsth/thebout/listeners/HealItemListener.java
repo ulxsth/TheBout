@@ -1,13 +1,14 @@
 package com.ulxsth.thebout.listeners;
 
-import com.ulxsth.thebout.models.items.Bandage;
+import com.ulxsth.thebout.models.items.HealItem;
+import com.ulxsth.thebout.models.items.HealItemEnum;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class BandageListener implements Listener {
+public class HealItemListener implements Listener {
     @EventHandler
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
         if(!event.isSneaking()) {
@@ -19,11 +20,12 @@ public class BandageListener implements Listener {
         if(handItem == null) {
             return;
         }
-        Bandage bandage = new Bandage();
-        if(!handItem.equals(bandage.getItemMeta())) {
+
+        HealItem healItem = HealItemEnum.findByItemMeta(handItem);
+        if(healItem == null) {
             return;
         }
 
-        bandage.useItemCountdown(player);
+        healItem.useItemCountdown(player);
     }
 }
