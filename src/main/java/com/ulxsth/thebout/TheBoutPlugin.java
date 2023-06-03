@@ -1,6 +1,8 @@
 package com.ulxsth.thebout;
 
 import com.ulxsth.thebout.commands.TbCommandExecutor;
+import com.ulxsth.thebout.listeners.BandageListener;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class TheBoutPlugin extends JavaPlugin {
@@ -18,6 +20,10 @@ public final class TheBoutPlugin extends JavaPlugin {
         if(plugin == null) {
             plugin = this;
         }
+
+        // リスナの登録
+        PluginManager pm = this.getServer().getPluginManager();
+        pm.registerEvents(new BandageListener(), this);
 
         getCommand("tb").setExecutor(new TbCommandExecutor());
     }
