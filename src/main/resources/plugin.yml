@@ -1,6 +1,6 @@
 name: TheBout
 version: '${version}'
-main: com.ulxsth.thebout.TheBout
+main: com.ulxsth.thebout.TheBoutPlugin
 api-version: 1.19
 commands:
   tb:
