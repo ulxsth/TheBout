@@ -1,7 +1,6 @@
 package com.ulxsth.thebout.commands;
 
 import com.ulxsth.thebout.models.items.GameItem;
-import com.ulxsth.thebout.models.items.WoodenSword;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
