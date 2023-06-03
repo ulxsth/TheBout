@@ -15,21 +15,21 @@ public enum HealItemEnum {
             new ArrayList<String>(Arrays.asList(
                     "医療用の包帯。",
                     "",
-                    "§8使用に要する時間：5s"
+                    "§8使用に要する時間：3s"
                     )),
-            3,
+            3.0,
             3.0
             );
 
     public final Material material;
     public final String name;
     public final List<String> lore;
-    public final int useTime;
+    public final double useTime;
     public final double maxHealAmount;
 
     public final HealItem item;
 
-    HealItemEnum(Material material, String name, List<String> lore, int useTime, double maxHealAmount) {
+    HealItemEnum(Material material, String name, List<String> lore, double useTime, double maxHealAmount) {
         this.material = material;
         this.name = name;
         this.lore = lore;

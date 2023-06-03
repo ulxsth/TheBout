@@ -6,11 +6,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class HealItem extends GameItem {
     private static final TheBoutPlugin plugin = TheBoutPlugin.getInstance();
 
-    private final int useTime;
+    private final double useTime;
     private final double maxHealAmount;
 
     public HealItem(HealItemEnum healItem) {
@@ -26,10 +27,10 @@ public class HealItem extends GameItem {
     }
 
     public void useItemCountdown(Player player) {
-        int useTime = this.useTime;
+        double useTime = this.useTime;
 
         new BukkitRunnable() {
-            int untilTime = useTime;
+            double untilTime = useTime;
 
             @Override
             public void run() {
@@ -38,7 +39,7 @@ public class HealItem extends GameItem {
                 }
 
                 if(!player.isSneaking()) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("使用をキャンセルしました"));
+                    // TODO: 使用中止のメッセージ表示
                     cancel();
                 }
 
@@ -48,10 +49,10 @@ public class HealItem extends GameItem {
                     return;
                 }
 
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("使用まで " + untilTime + " 秒..."));
-                untilTime--;
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("使用まで " + (int)Math.ceil(untilTime) + " 秒..."));
+                untilTime -= 0.1;
             }
-        }.runTaskTimer(plugin, 0, 20);
+        }.runTaskTimer(plugin, 0, 2);
     }
 
     public void heal(Player player) {
