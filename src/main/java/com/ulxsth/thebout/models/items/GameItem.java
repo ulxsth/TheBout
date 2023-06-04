@@ -26,8 +26,13 @@ public abstract class GameItem {
         if(name.equals("bokutou")) {
             return new WeaponItem(WeaponItemEnum.WOODEN_SWORD);
         }
+
+        // 回復アイテム
         if(name.equals("houtai")) {
             return new HealItem(HealItemEnum.BANDAGE);
+        }
+        if(name.equals("fir")) {
+            return new HealItem(HealItemEnum.FIRST_AID_KIT);
         }
 
         return null;
