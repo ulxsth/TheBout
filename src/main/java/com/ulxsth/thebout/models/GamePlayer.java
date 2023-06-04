@@ -68,6 +68,22 @@ public class GamePlayer {
     }
 
     /**
+     * 該当する参加者を検索します。
+     * 存在しない場合はnullを返します。
+     * @param player: 検索するプレイヤー
+     * @return 該当する参加者
+     */
+    public GamePlayer findByPlayer(Player player) {
+        for(GamePlayer participant: participants) {
+            if(participant.getPlayer().equals(player)) {
+                return participant;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * プレイヤーが参加者に存在するかを確認します
      * @param player: 確認するプレイヤー
      * @return 存在するかを示す真偽値
@@ -96,15 +112,83 @@ public class GamePlayer {
         return protectTargets;
     }
 
+    /**
+     * 保護対象に参加者を追加します
+     * @param player: 追加するプレイヤー
+     * @param isDisplay: 表示リストに追加するか
+     * @throws Exception: プレイヤーがすでに存在する場合
+     */
+    public void addProtectTargets(Player player, boolean isDisplay) throws Exception {
+        // TODO: Setで置き換える（重複を許さない）
+        if(isExist(player)) {
+            throw new Exception("そのプレイヤーは既に存在します");
+        }
+
+        GamePlayer gamePlayer = findByPlayer(player);
+        this.protectTargets.add(gamePlayer);
+        if(isDisplay) {
+            displayProtectTargets.add(gamePlayer);
+        }
+    }
+
     public List<GamePlayer> getDisplayProtectTargets() {
         return displayProtectTargets;
+    }
+
+    /**
+     * 保護対象の表示リストにプレイヤーを追加します
+     * @param player: 追加するプレイヤー
+     * @throws Exception: プレイヤーが既に存在する場合
+     */
+    public void addDisplayProtectTargets(Player player) throws Exception {
+        // TODO: Setで置き換える（重複を許さない）
+        if(isExist(player)) {
+            throw new Exception("そのプレイヤーは既に存在します");
+        }
+
+        GamePlayer gamePlayer = findByPlayer(player);
+        this.displayProtectTargets.add(gamePlayer);
     }
 
     public List<GamePlayer> getKillTargets() {
         return killTargets;
     }
 
+    /**
+     * 殺害対象リストにプレイヤーを追加します
+     * @param player: 追加するプレイヤー
+     * @param isDisplay: 表示リストに追加するか
+     * @throws Exception: プレイヤーが既に存在する場合
+     */
+    public void addKillTargets(Player player, boolean isDisplay) throws Exception {
+        // TODO: Setで置き換える（重複を許さない）
+        if(isExist(player)) {
+            throw new Exception("そのプレイヤーは既に存在します");
+        }
+
+        GamePlayer gamePlayer = findByPlayer(player);
+        this.killTargets.add(gamePlayer);
+        if(isDisplay) {
+            displayKillTargets.add(gamePlayer);
+        }
+    }
+
     public List<GamePlayer> getDisplayKillTargets() {
         return displayKillTargets;
+    }
+
+    /**
+     * 殺害対象の表示リストにプレイヤーを追加します
+     * @param player: 追加するプレイヤー
+     * @throws Exception: 表示リストに追加するか
+     */
+    public void addDisplayKillTargets(Player player) throws Exception {
+        // TODO: Setで置き換える（重複を許さない）
+        if(isExist(player)) {
+            throw new Exception("そのプレイヤーは既に存在します");
+        }
+
+        GamePlayer gamePlayer = findByPlayer(player);
+        this.displayKillTargets.add(gamePlayer);
     }
 }
