@@ -11,7 +11,7 @@ public enum HealItemEnum {
 
     BANDAGE(
             Material.WHITE_CANDLE,
-            "包帯",
+            "§a包帯",
             new ArrayList<String>(Arrays.asList(
                     "医療用の包帯。",
                     "",
@@ -19,7 +19,20 @@ public enum HealItemEnum {
                     )),
             3.0,
             3.0
-            );
+            ),
+    FIRST_AID_KIT(
+            Material.RED_SHULKER_BOX,
+            "§a集中治療キット",
+            new ArrayList<String>(Arrays.asList(
+                    "大きめの鞄に、医療用道具が詰められたもの。",
+                    "時間はかかるが、体力を全快できる。",
+                    "",
+                    "§8使用に要する時間：8s"
+            )),
+            8.0,
+            1000.0
+    )
+    ;
 
     public final Material material;
     public final String name;
