@@ -131,6 +131,21 @@ public class GamePlayer {
         }
     }
 
+    /**
+     * プレイヤーが保護対象に含まれているか確認します。
+     * @param player: 調べるプレイヤー
+     * @return 含まれるか
+     */
+    public boolean isExistOnProtectTarget(Player player) {
+        for(GamePlayer gamePlayer: protectTargets) {
+            if(gamePlayer.getPlayer().equals(player)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public List<GamePlayer> getDisplayProtectTargets() {
         return displayProtectTargets;
     }
@@ -148,6 +163,21 @@ public class GamePlayer {
 
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayProtectTargets.add(gamePlayer);
+    }
+
+    /**
+     * プレイヤーが保護対象の表示リストに含まれているか確認します。
+     * @param player: 調べるプレイヤー
+     * @return 含まれるか
+     */
+    public boolean isExistOnDisplayProtectTarget(Player player) {
+        for(GamePlayer gamePlayer: displayProtectTargets) {
+            if(gamePlayer.getPlayer().equals(player)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public List<GamePlayer> getKillTargets() {
@@ -173,6 +203,21 @@ public class GamePlayer {
         }
     }
 
+    /**
+     * プレイヤーが殺害対象に含まれているか確認します。
+     * @param player: 調べるプレイヤー
+     * @return 含まれるか
+     */
+    public boolean isExistOnKillTarget(Player player) {
+        for(GamePlayer gamePlayer: killTargets) {
+            if(gamePlayer.getPlayer().equals(player)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public List<GamePlayer> getDisplayKillTargets() {
         return displayKillTargets;
     }
@@ -190,5 +235,20 @@ public class GamePlayer {
 
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayKillTargets.add(gamePlayer);
+    }
+
+    /**
+     * プレイヤーが殺害対象に含まれているか確認します。
+     * @param player: 調べるプレイヤー
+     * @return 含まれるか
+     */
+    public boolean isExistOnDisplayKillTarget(Player player) {
+        for(GamePlayer gamePlayer: displayKillTargets) {
+            if(gamePlayer.getPlayer().equals(player)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
