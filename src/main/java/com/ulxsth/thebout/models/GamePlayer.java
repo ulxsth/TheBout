@@ -3,7 +3,7 @@ package com.ulxsth.thebout.models;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -44,6 +44,38 @@ public class GamePlayer {
                 participants.remove(gamePlayer);
                 break;
             }
+        }
+    }
+
+    /**
+     * 参加者のカードをシャッフルします。
+     */
+    public static void assignAllPlayer() {
+        // TODO: 役職ごとに配布カードの処理をする
+
+        Random rand = new Random();
+
+        GamePlayer newGamePlayer;
+        Set<GamePlayer> newParticipants = new HashSet<>();
+        Set<GamePlayer> remainKillTarget = participants;
+        Set<GamePlayer> remainProtectTarget = participants;
+
+        for(GamePlayer gamePlayer: participants) {
+            newGamePlayer = new GamePlayer(gamePlayer.getPlayer());
+
+            Set<GamePlayer> remainKillTargetCopy = new HashSet<>(remainKillTarget);
+            remainKillTargetCopy.remove(findByPlayer(gamePlayer.getPlayer()));
+            GamePlayer killTarget = (GamePlayer) remainKillTargetCopy.toArray()[rand.nextInt(remainKillTarget.size())];
+
+            Set<GamePlayer> remainProtectTargetCopy = new HashSet<>(remainProtectTarget);
+            remainProtectTargetCopy.remove(findByPlayer(gamePlayer.getPlayer()));
+            remainProtectTargetCopy.remove(findByPlayer(killTarget.getPlayer()));
+            GamePlayer protectTarget = (GamePlayer) remainProtectTargetCopy.toArray()[rand.nextInt(remainProtectTarget.size())];
+
+            newGamePlayer.addKillTargets(killTarget.getPlayer(), true);
+            newGamePlayer.addProtectTargets(protectTarget.getPlayer(), true);
+            remainKillTarget.remove(killTarget);
+            remainProtectTargetCopy.remove(protectTarget);
         }
     }
 
