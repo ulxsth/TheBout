@@ -2,25 +2,23 @@ package com.ulxsth.thebout.models;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.sql.Array;
+import java.util.*;
 
 
 public class GamePlayer {
-    private static final Set<GamePlayer> participants = new HashSet<>();
+    private static final List<GamePlayer> participants = new ArrayList<>();
 
     private final Player player;
 
-    private final Set<GamePlayer> protectTargets = new HashSet<>();
-    private final Set<GamePlayer> displayProtectTargets = new HashSet<>();
-    private final Set<GamePlayer> killTargets = new HashSet<>();
-    private final Set<GamePlayer> displayKillTargets = new HashSet<>();
+    private final List<GamePlayer> protectTargets = new ArrayList<>();
+    private final List<GamePlayer> displayProtectTargets = new ArrayList<>();
+    private final List<GamePlayer> killTargets = new ArrayList<>();
+    private final List<GamePlayer> displayKillTargets = new ArrayList<>();
 
     private GamePlayer(Player player) {
         this.player = player;
     }
-
 
     public boolean equals(Player player) {
         return this.getPlayer().getUniqueId().equals(player.getUniqueId());
@@ -31,6 +29,9 @@ public class GamePlayer {
      * @param player: 参加者を示すPlayer
      */
     public static void addPlayer(Player player) {
+        if (isExist(player)) {
+            return;
+        }
         GamePlayer gamePlayer = new GamePlayer(player);
         participants.add(gamePlayer);
     }
@@ -40,10 +41,6 @@ public class GamePlayer {
      * @param player: 削除するPlayer
      */
     public static void removePlayer(Player player) {
-        if(!isExist(player)) {
-            return;
-        }
-
         for(GamePlayer gamePlayer: participants) {
             if(gamePlayer.getPlayer().equals(player)) {
                 participants.remove(gamePlayer);
@@ -61,21 +58,20 @@ public class GamePlayer {
         Random rand = new Random();
 
         GamePlayer newGamePlayer;
-        Set<GamePlayer> newParticipants = new HashSet<>();
-        Set<GamePlayer> remainKillTarget = participants;
-        Set<GamePlayer> remainProtectTarget = participants;
+        List<GamePlayer> remainKillTarget = participants;
+        List<GamePlayer> remainProtectTarget = participants;
 
         for(GamePlayer gamePlayer: participants) {
             newGamePlayer = new GamePlayer(gamePlayer.getPlayer());
 
-            Set<GamePlayer> remainKillTargetCopy = new HashSet<>(remainKillTarget);
+            List<GamePlayer> remainKillTargetCopy = new ArrayList<>(remainKillTarget);
             remainKillTargetCopy.remove(findByPlayer(gamePlayer.getPlayer()));
-            GamePlayer killTarget = (GamePlayer) remainKillTargetCopy.toArray()[rand.nextInt(remainKillTarget.size())];
+            GamePlayer killTarget = (GamePlayer) remainKillTargetCopy.get(rand.nextInt(remainKillTarget.size()));
 
-            Set<GamePlayer> remainProtectTargetCopy = new HashSet<>(remainProtectTarget);
+            List<GamePlayer> remainProtectTargetCopy = new ArrayList<>(remainProtectTarget);
             remainProtectTargetCopy.remove(findByPlayer(gamePlayer.getPlayer()));
             remainProtectTargetCopy.remove(findByPlayer(killTarget.getPlayer()));
-            GamePlayer protectTarget = (GamePlayer) remainProtectTargetCopy.toArray()[rand.nextInt(remainProtectTarget.size())];
+            GamePlayer protectTarget = (GamePlayer) remainProtectTargetCopy.get(rand.nextInt(remainProtectTarget.size()));
 
             newGamePlayer.addKillTarget(killTarget.getPlayer(), true);
             newGamePlayer.addProtectTarget(protectTarget.getPlayer(), true);
@@ -116,7 +112,7 @@ public class GamePlayer {
         return false;
     }
 
-    public static Set<GamePlayer> getParticipants() {
+    public static List<GamePlayer> getParticipants() {
         return participants;
     }
 
@@ -125,7 +121,7 @@ public class GamePlayer {
         return player;
     }
 
-    public Set<GamePlayer> getProtectTargets() {
+    public List<GamePlayer> getProtectTargets() {
         return protectTargets;
     }
 
@@ -135,6 +131,10 @@ public class GamePlayer {
      * @param isDisplay: 表示リストに追加するか
      */
     public void addProtectTarget(Player player, boolean isDisplay) {
+        if (isExist(player)) {
+            return;
+        }
+
         GamePlayer gamePlayer = findByPlayer(player);
         this.protectTargets.add(gamePlayer);
         if(isDisplay) {
@@ -157,7 +157,7 @@ public class GamePlayer {
         return false;
     }
 
-    public Set<GamePlayer> getDisplayProtectTargets() {
+    public List<GamePlayer> getDisplayProtectTargets() {
         return displayProtectTargets;
     }
 
@@ -166,6 +166,10 @@ public class GamePlayer {
      * @param player: 追加するプレイヤー
      */
     public void addDisplayProtectTarget(Player player) {
+        if (isExist(player)) {
+            return;
+        }
+
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayProtectTargets.add(gamePlayer);
     }
@@ -185,7 +189,7 @@ public class GamePlayer {
         return false;
     }
 
-    public Set<GamePlayer> getKillTargets() {
+    public List<GamePlayer> getKillTargets() {
         return killTargets;
     }
 
@@ -195,6 +199,10 @@ public class GamePlayer {
      * @param isDisplay: 表示リストに追加するか
      */
     public void addKillTarget(Player player, boolean isDisplay) {
+        if (isExist(player)) {
+            return;
+        }
+
         GamePlayer gamePlayer = findByPlayer(player);
         this.killTargets.add(gamePlayer);
         if(isDisplay) {
@@ -217,7 +225,7 @@ public class GamePlayer {
         return false;
     }
 
-    public Set<GamePlayer> getDisplayKillTargets() {
+    public List<GamePlayer> getDisplayKillTargets() {
         return displayKillTargets;
     }
 
@@ -226,6 +234,10 @@ public class GamePlayer {
      * @param player: 追加するプレイヤー
      */
     public void addDisplayKillTarget(Player player) {
+        if (isExist(player)) {
+            return;
+        }
+
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayKillTargets.add(gamePlayer);
     }
