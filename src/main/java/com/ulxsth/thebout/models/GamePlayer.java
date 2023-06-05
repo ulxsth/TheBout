@@ -2,48 +2,30 @@ package com.ulxsth.thebout.models;
 
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class GamePlayer {
-    private static List<GamePlayer> participants = new ArrayList<>();
+    private static Set<GamePlayer> participants = new HashSet<>();
 
     private Player player;
 
-    private List<GamePlayer> protectTargets;
-    private List<GamePlayer> displayProtectTargets;
-    private List<GamePlayer> killTargets;
-    private List<GamePlayer> displayKillTargets;
+    private Set<GamePlayer> protectTargets = new HashSet<>();
+    private Set<GamePlayer> displayProtectTargets = new HashSet<>();
+    private Set<GamePlayer> killTargets = new HashSet<>();
+    private Set<GamePlayer> displayKillTargets = new HashSet<>();
 
     private GamePlayer(Player player) {
-        this(player, new ArrayList<GamePlayer>(), new ArrayList<GamePlayer>(), new ArrayList<GamePlayer>(), new ArrayList<GamePlayer>());
-    }
-
-    private GamePlayer(Player player, List<GamePlayer> protectTargets, List<GamePlayer> displayProtectTargets, List<GamePlayer> killTargets, List<GamePlayer> displayKillTargets) {
-        if(player.isOnline()) {
-            throw new IllegalArgumentException("対象のプレイヤーは存在しないか、オンラインではありません");
-        }
-
         this.player = player;
-        this.protectTargets = protectTargets;
-        this.displayProtectTargets = displayProtectTargets;
-        this.killTargets = killTargets;
-        this.displayKillTargets = displayKillTargets;
     }
 
     /**
      * プレイヤーを参加者に追加します
      * @param player: 参加者を示すPlayer
-     * @throws Exception: プレイヤーがすでに参加している場合
      */
-    public static void addPlayer(Player player) throws Exception {
-        if(isExist(player)) {
-            throw new Exception("プレイヤーは既に参加しています");
-        }
-
-        // TODO: ターゲットの抽選処理
-
+    public static void addPlayer(Player player) {
         GamePlayer gamePlayer = new GamePlayer(player);
         participants.add(gamePlayer);
     }
@@ -51,17 +33,15 @@ public class GamePlayer {
     /**
      * 参加者から指定したプレイヤーを削除します
      * @param player: 削除するPlayer
-     * @throws Exception: プレイヤーが参加者にいない場合
      */
-    public static void removePlayer(Player player) throws Exception {
+    public static void removePlayer(Player player) {
         if(!isExist(player)) {
-            throw new Exception("プレイヤーが参加状態ではないか、存在しません");
+            return;
         }
 
-        for(int i=0; i<participants.size(); i++) {
-            GamePlayer gamePlayer = participants.get(i);
+        for(GamePlayer gamePlayer: participants) {
             if(gamePlayer.getPlayer().equals(player)) {
-                participants.remove(i);
+                participants.remove(gamePlayer);
                 break;
             }
         }
@@ -73,7 +53,7 @@ public class GamePlayer {
      * @param player: 検索するプレイヤー
      * @return 該当する参加者
      */
-    public GamePlayer findByPlayer(Player player) {
+    public static GamePlayer findByPlayer(Player player) {
         for(GamePlayer participant: participants) {
             if(participant.getPlayer().equals(player)) {
                 return participant;
@@ -99,7 +79,7 @@ public class GamePlayer {
         return false;
     }
 
-    public static List<GamePlayer> getParticipants() {
+    public static Set<GamePlayer> getParticipants() {
         return participants;
     }
 
@@ -108,7 +88,7 @@ public class GamePlayer {
         return player;
     }
 
-    public List<GamePlayer> getProtectTargets() {
+    public Set<GamePlayer> getProtectTargets() {
         return protectTargets;
     }
 
@@ -116,14 +96,8 @@ public class GamePlayer {
      * 保護対象に参加者を追加します
      * @param player: 追加するプレイヤー
      * @param isDisplay: 表示リストに追加するか
-     * @throws Exception: プレイヤーがすでに存在する場合
      */
-    public void addProtectTargets(Player player, boolean isDisplay) throws Exception {
-        // TODO: Setで置き換える（重複を許さない）
-        if(isExist(player)) {
-            throw new Exception("そのプレイヤーは既に存在します");
-        }
-
+    public void addProtectTargets(Player player, boolean isDisplay) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.protectTargets.add(gamePlayer);
         if(isDisplay) {
@@ -146,21 +120,15 @@ public class GamePlayer {
         return false;
     }
 
-    public List<GamePlayer> getDisplayProtectTargets() {
+    public Set<GamePlayer> getDisplayProtectTargets() {
         return displayProtectTargets;
     }
 
     /**
      * 保護対象の表示リストにプレイヤーを追加します
      * @param player: 追加するプレイヤー
-     * @throws Exception: プレイヤーが既に存在する場合
      */
-    public void addDisplayProtectTargets(Player player) throws Exception {
-        // TODO: Setで置き換える（重複を許さない）
-        if(isExist(player)) {
-            throw new Exception("そのプレイヤーは既に存在します");
-        }
-
+    public void addDisplayProtectTargets(Player player) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayProtectTargets.add(gamePlayer);
     }
@@ -180,7 +148,7 @@ public class GamePlayer {
         return false;
     }
 
-    public List<GamePlayer> getKillTargets() {
+    public Set<GamePlayer> getKillTargets() {
         return killTargets;
     }
 
@@ -188,14 +156,8 @@ public class GamePlayer {
      * 殺害対象リストにプレイヤーを追加します
      * @param player: 追加するプレイヤー
      * @param isDisplay: 表示リストに追加するか
-     * @throws Exception: プレイヤーが既に存在する場合
      */
-    public void addKillTargets(Player player, boolean isDisplay) throws Exception {
-        // TODO: Setで置き換える（重複を許さない）
-        if(isExist(player)) {
-            throw new Exception("そのプレイヤーは既に存在します");
-        }
-
+    public void addKillTargets(Player player, boolean isDisplay) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.killTargets.add(gamePlayer);
         if(isDisplay) {
@@ -218,21 +180,15 @@ public class GamePlayer {
         return false;
     }
 
-    public List<GamePlayer> getDisplayKillTargets() {
+    public Set<GamePlayer> getDisplayKillTargets() {
         return displayKillTargets;
     }
 
     /**
      * 殺害対象の表示リストにプレイヤーを追加します
      * @param player: 追加するプレイヤー
-     * @throws Exception: 表示リストに追加するか
      */
-    public void addDisplayKillTargets(Player player) throws Exception {
-        // TODO: Setで置き換える（重複を許さない）
-        if(isExist(player)) {
-            throw new Exception("そのプレイヤーは既に存在します");
-        }
-
+    public void addDisplayKillTargets(Player player) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayKillTargets.add(gamePlayer);
     }
