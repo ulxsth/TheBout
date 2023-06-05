@@ -21,6 +21,10 @@ public class GamePlayer {
         this.player = player;
     }
 
+    public boolean equals(Player player) {
+        return this.getPlayer().equals(player);
+    }
+
     /**
      * プレイヤーを参加者に追加します
      * @param player: 参加者を示すPlayer
