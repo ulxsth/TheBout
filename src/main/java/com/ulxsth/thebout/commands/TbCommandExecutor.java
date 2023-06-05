@@ -1,5 +1,7 @@
 package com.ulxsth.thebout.commands;
 
+import com.ulxsth.thebout.TheBoutPlugin;
+import com.ulxsth.thebout.models.GamePlayer;
 import com.ulxsth.thebout.models.items.GameItem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class TbCommandExecutor implements CommandExecutor {
+    private static final TheBoutPlugin plugin = TheBoutPlugin.getInstance();
     private static final List<String> USAGE = new ArrayList<>(Arrays.asList(
             ""
     ));
@@ -54,6 +57,32 @@ public class TbCommandExecutor implements CommandExecutor {
             ItemStack itemStack = item.getItemStack(amount);
             ((Player)sender).getInventory().addItem(itemStack);
             sender.sendMessage(item.getName() + " を " + amount + " 個渡したよ");
+        }
+
+        if (order.equals("list")) {
+            sender.sendMessage("[参加者]");
+            for (GamePlayer gamePlayer: GamePlayer.getParticipants()) {
+                String dispName = gamePlayer.getPlayer().getDisplayName();
+                sender.sendMessage("> " + dispName);
+            }
+        }
+
+        if (order.equals("join")) {
+            if(!(sender instanceof Player)) {
+                sender.sendMessage("§c/tb joinはコンソールからは実行できないよ");
+                return true;
+            }
+
+            GamePlayer.addPlayer((Player) sender);
+            sender.sendMessage("ゲームに参加したよ");
+        }
+
+        if (order.equals("joinall")) {
+            for (Player player: plugin.getServer().getOnlinePlayers()) {
+                GamePlayer.addPlayer(player);
+                player.sendMessage("ゲームに参加したよ");
+            }
+            sender.sendMessage("全員をゲームに参加させたよ");
         }
         return true;
     }
