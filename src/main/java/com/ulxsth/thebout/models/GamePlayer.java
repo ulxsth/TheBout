@@ -21,8 +21,9 @@ public class GamePlayer {
         this.player = player;
     }
 
+
     public boolean equals(Player player) {
-        return this.getPlayer().equals(player);
+        return this.getPlayer().getUniqueId().equals(player.getUniqueId());
     }
 
     /**
@@ -106,7 +107,7 @@ public class GamePlayer {
      */
     public static boolean isExist(Player player) {
         for(GamePlayer gamePlayer: participants) {
-            if(!gamePlayer.getPlayer().equals(player)) {
+            if(!gamePlayer.equals(player)) {
                 continue;
             }
             return true;
