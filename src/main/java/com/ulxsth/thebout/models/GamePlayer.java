@@ -8,14 +8,14 @@ import java.util.Set;
 
 
 public class GamePlayer {
-    private static Set<GamePlayer> participants = new HashSet<>();
+    private static final Set<GamePlayer> participants = new HashSet<>();
 
-    private Player player;
+    private final Player player;
 
-    private Set<GamePlayer> protectTargets = new HashSet<>();
-    private Set<GamePlayer> displayProtectTargets = new HashSet<>();
-    private Set<GamePlayer> killTargets = new HashSet<>();
-    private Set<GamePlayer> displayKillTargets = new HashSet<>();
+    private final Set<GamePlayer> protectTargets = new HashSet<>();
+    private final Set<GamePlayer> displayProtectTargets = new HashSet<>();
+    private final Set<GamePlayer> killTargets = new HashSet<>();
+    private final Set<GamePlayer> displayKillTargets = new HashSet<>();
 
     private GamePlayer(Player player) {
         this.player = player;
@@ -72,8 +72,8 @@ public class GamePlayer {
             remainProtectTargetCopy.remove(findByPlayer(killTarget.getPlayer()));
             GamePlayer protectTarget = (GamePlayer) remainProtectTargetCopy.toArray()[rand.nextInt(remainProtectTarget.size())];
 
-            newGamePlayer.addKillTargets(killTarget.getPlayer(), true);
-            newGamePlayer.addProtectTargets(protectTarget.getPlayer(), true);
+            newGamePlayer.addKillTarget(killTarget.getPlayer(), true);
+            newGamePlayer.addProtectTarget(protectTarget.getPlayer(), true);
             remainKillTarget.remove(killTarget);
             remainProtectTargetCopy.remove(protectTarget);
         }
@@ -129,7 +129,7 @@ public class GamePlayer {
      * @param player: 追加するプレイヤー
      * @param isDisplay: 表示リストに追加するか
      */
-    public void addProtectTargets(Player player, boolean isDisplay) {
+    public void addProtectTarget(Player player, boolean isDisplay) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.protectTargets.add(gamePlayer);
         if(isDisplay) {
@@ -160,7 +160,7 @@ public class GamePlayer {
      * 保護対象の表示リストにプレイヤーを追加します
      * @param player: 追加するプレイヤー
      */
-    public void addDisplayProtectTargets(Player player) {
+    public void addDisplayProtectTarget(Player player) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayProtectTargets.add(gamePlayer);
     }
@@ -189,7 +189,7 @@ public class GamePlayer {
      * @param player: 追加するプレイヤー
      * @param isDisplay: 表示リストに追加するか
      */
-    public void addKillTargets(Player player, boolean isDisplay) {
+    public void addKillTarget(Player player, boolean isDisplay) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.killTargets.add(gamePlayer);
         if(isDisplay) {
@@ -220,7 +220,7 @@ public class GamePlayer {
      * 殺害対象の表示リストにプレイヤーを追加します
      * @param player: 追加するプレイヤー
      */
-    public void addDisplayKillTargets(Player player) {
+    public void addDisplayKillTarget(Player player) {
         GamePlayer gamePlayer = findByPlayer(player);
         this.displayKillTargets.add(gamePlayer);
     }
