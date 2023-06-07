@@ -57,14 +57,16 @@ public class TbCommandExecutor implements CommandExecutor {
             ItemStack itemStack = item.getItemStack(amount);
             ((Player)sender).getInventory().addItem(itemStack);
             sender.sendMessage(item.getName() + " を " + amount + " 個渡したよ");
+            return true;
         }
 
         if (order.equals("list")) {
             sender.sendMessage("[参加者]");
-            for (GamePlayer gamePlayer: GamePlayer.getParticipants()) {
-                String dispName = gamePlayer.getPlayer().getDisplayName();
-                sender.sendMessage("> " + dispName);
+            for (Player player: GamePlayer.getParticipants()) {
+                String displayName = player.getDisplayName();
+                sender.sendMessage("> " + displayName);
             }
+            return true;
         }
 
         if (order.equals("join")) {
@@ -75,6 +77,7 @@ public class TbCommandExecutor implements CommandExecutor {
 
             GamePlayer.addPlayer((Player) sender);
             sender.sendMessage("ゲームに参加したよ");
+            return true;
         }
 
         if (order.equals("joinall")) {
@@ -83,6 +86,34 @@ public class TbCommandExecutor implements CommandExecutor {
                 player.sendMessage("ゲームに参加したよ");
             }
             sender.sendMessage("全員をゲームに参加させたよ");
+            return true;
+        }
+
+        // TODO: テスト
+        if(order.equals("remove")) {
+            if(args.length == 1) {
+                sender.sendMessage("つかいかた: /tb remove <プレイヤーID>");
+                return true;
+            }
+
+            String userId = args[1];
+            Player player = plugin.getServer().getPlayer(userId);
+            if(player == null) {
+                sender.sendMessage("§cプレイヤーが見つからないよ");
+                return true;
+            }
+
+            GamePlayer.removePlayer(player);
+            sender.sendMessage("プレイヤーを外したよ");
+            player.sendMessage("ゲームから抜けたよ");
+            return true;
+        }
+
+        // TODO: テスト
+        if(order.equals("removeall")) {
+            GamePlayer.clear();
+            plugin.getServer().broadcastMessage("ゲームを解散したよ");
+            return true;
         }
         return true;
     }

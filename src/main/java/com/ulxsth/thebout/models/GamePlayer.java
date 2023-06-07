@@ -6,44 +6,40 @@ import java.util.*;
 
 
 public class GamePlayer {
-    private static final List<GamePlayer> participants = new ArrayList<>();
+    private static final List<Player> participants = new ArrayList<>();
 
     private final Player player;
 
-    private final List<GamePlayer> protectTargets = new ArrayList<>();
-    private final List<GamePlayer> displayProtectTargets = new ArrayList<>();
-    private final List<GamePlayer> killTargets = new ArrayList<>();
-    private final List<GamePlayer> displayKillTargets = new ArrayList<>();
+    private final List<Player> protectTargets = new ArrayList<>();
+    private final List<Player> displayProtectTargets = new ArrayList<>();
+    private final List<Player> killTargets = new ArrayList<>();
+    private final List<Player> displayKillTargets = new ArrayList<>();
 
     private GamePlayer(Player player) {
         this.player = player;
     }
 
-    public boolean equals(Player player) {
-        return this.getPlayer().getUniqueId().equals(player.getUniqueId());
-    }
-
     /**
      * プレイヤーを参加者に追加します
-     * @param player: 参加者を示すPlayer
+     * @param target: 参加者を示すPlayer
      */
-    public static void addPlayer(Player player) {
-        if (isExist(player)) {
+    public static void addPlayer(Player target) {
+        if (isExistOnParticipants(target)) {
             return;
         }
-        GamePlayer gamePlayer = new GamePlayer(player);
-        participants.add(gamePlayer);
+
+        participants.add(target);
     }
 
     /**
      * 参加者から指定したプレイヤーを削除します
-     * @param player: 削除するPlayer
+     * @param target: 削除するPlayer
      */
-    public static void removePlayer(Player player) {
-        for(GamePlayer gamePlayer: participants) {
-            if(gamePlayer.getPlayer().equals(player)) {
-                participants.remove(gamePlayer);
-                break;
+    public static void removePlayer(Player target) {
+        for(Player player: participants) {
+            if(player.getUniqueId().equals(target.getUniqueId())) {
+                participants.remove(player);
+                return;
             }
         }
     }
@@ -56,53 +52,37 @@ public class GamePlayer {
 
         Random rand = new Random();
 
-        GamePlayer newGamePlayer;
-        List<GamePlayer> remainKillTarget = participants;
-        List<GamePlayer> remainProtectTarget = participants;
+        GamePlayer newPlayer;
+        List<Player> remainKillTarget = participants;
+        List<Player> remainProtectTarget = participants;
 
-        for(GamePlayer gamePlayer: participants) {
-            newGamePlayer = new GamePlayer(gamePlayer.getPlayer());
+        for(Player player: participants) {
+            newPlayer = new GamePlayer(player.getPlayer());
 
-            List<GamePlayer> remainKillTargetCopy = new ArrayList<>(remainKillTarget);
-            remainKillTargetCopy.remove(findByPlayer(gamePlayer.getPlayer()));
-            GamePlayer killTarget = (GamePlayer) remainKillTargetCopy.get(rand.nextInt(remainKillTarget.size()));
+            List<Player> remainKillTargetCopy = new ArrayList<>(remainKillTarget);
+            remainKillTargetCopy.remove(player);
+            Player killTarget = remainKillTargetCopy.get(rand.nextInt(remainKillTarget.size()));
 
-            List<GamePlayer> remainProtectTargetCopy = new ArrayList<>(remainProtectTarget);
-            remainProtectTargetCopy.remove(findByPlayer(gamePlayer.getPlayer()));
-            remainProtectTargetCopy.remove(findByPlayer(killTarget.getPlayer()));
-            GamePlayer protectTarget = (GamePlayer) remainProtectTargetCopy.get(rand.nextInt(remainProtectTarget.size()));
+            List<Player> remainProtectTargetCopy = new ArrayList<>(remainProtectTarget);
+            remainProtectTargetCopy.remove(player);
+            remainProtectTargetCopy.remove(killTarget);
+            Player protectTarget = remainProtectTargetCopy.get(rand.nextInt(remainProtectTarget.size()));
 
-            newGamePlayer.addKillTarget(killTarget.getPlayer(), true);
-            newGamePlayer.addProtectTarget(protectTarget.getPlayer(), true);
+            newPlayer.addKillTarget(killTarget, true);
+            newPlayer.addProtectTarget(protectTarget, true);
             remainKillTarget.remove(killTarget);
             remainProtectTargetCopy.remove(protectTarget);
         }
     }
 
     /**
-     * 該当する参加者を検索します。
-     * 存在しない場合はnullを返します。
-     * @param player: 検索するプレイヤー
-     * @return 該当する参加者
-     */
-    public static GamePlayer findByPlayer(Player player) {
-        for(GamePlayer participant: participants) {
-            if(participant.getPlayer().equals(player)) {
-                return participant;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * プレイヤーが参加者に存在するかを確認します
-     * @param player: 確認するプレイヤー
+     * @param target: 確認するプレイヤー
      * @return 存在するかを示す真偽値
      */
-    public static boolean isExist(Player player) {
-        for(GamePlayer gamePlayer: participants) {
-            if(!gamePlayer.equals(player)) {
+    public static boolean isExistOnParticipants(Player target) {
+        for(Player player: participants) {
+            if(!player.getUniqueId().equals(target.getUniqueId())) {
                 continue;
             }
             return true;
@@ -111,7 +91,7 @@ public class GamePlayer {
         return false;
     }
 
-    public static List<GamePlayer> getParticipants() {
+    public static List<Player> getParticipants() {
         return participants;
     }
 
@@ -123,35 +103,34 @@ public class GamePlayer {
         return player;
     }
 
-    public List<GamePlayer> getProtectTargets() {
+    public List<Player> getProtectTargets() {
         return protectTargets;
     }
 
     /**
      * 保護対象に参加者を追加します
-     * @param player: 追加するプレイヤー
+     * @param target: 追加するプレイヤー
      * @param isDisplay: 表示リストに追加するか
      */
-    public void addProtectTarget(Player player, boolean isDisplay) {
-        if (isExist(player)) {
+    public void addProtectTarget(Player target, boolean isDisplay) {
+        if (isExistOnParticipants(target)) {
             return;
         }
 
-        GamePlayer gamePlayer = findByPlayer(player);
-        this.protectTargets.add(gamePlayer);
+        this.protectTargets.add(target);
         if(isDisplay) {
-            displayProtectTargets.add(gamePlayer);
+            displayProtectTargets.add(target);
         }
     }
 
     /**
      * プレイヤーが保護対象に含まれているか確認します。
-     * @param player: 調べるプレイヤー
+     * @param target: 調べるプレイヤー
      * @return 含まれるか
      */
-    public boolean isExistOnProtectTarget(Player player) {
-        for(GamePlayer gamePlayer: protectTargets) {
-            if(gamePlayer.getPlayer().equals(player)) {
+    public boolean isExistOnProtectTarget(Player target) {
+        for(Player player: protectTargets) {
+            if(player.getUniqueId().equals(target.getUniqueId())) {
                 return true;
             }
         }
@@ -159,31 +138,30 @@ public class GamePlayer {
         return false;
     }
 
-    public List<GamePlayer> getDisplayProtectTargets() {
+    public List<Player> getDisplayProtectTargets() {
         return displayProtectTargets;
     }
 
     /**
      * 保護対象の表示リストにプレイヤーを追加します
-     * @param player: 追加するプレイヤー
+     * @param target: 追加するプレイヤー
      */
-    public void addDisplayProtectTarget(Player player) {
-        if (isExist(player)) {
+    public void addDisplayProtectTarget(Player target) {
+        if (isExistOnParticipants(target)) {
             return;
         }
 
-        GamePlayer gamePlayer = findByPlayer(player);
-        this.displayProtectTargets.add(gamePlayer);
+        this.displayProtectTargets.add(target);
     }
 
     /**
      * プレイヤーが保護対象の表示リストに含まれているか確認します。
-     * @param player: 調べるプレイヤー
+     * @param target: 調べるプレイヤー
      * @return 含まれるか
      */
-    public boolean isExistOnDisplayProtectTarget(Player player) {
-        for(GamePlayer gamePlayer: displayProtectTargets) {
-            if(gamePlayer.getPlayer().equals(player)) {
+    public boolean isExistOnDisplayProtectTarget(Player target) {
+        for(Player player: displayProtectTargets) {
+            if(player.getUniqueId().equals(target.getUniqueId())) {
                 return true;
             }
         }
@@ -191,35 +169,34 @@ public class GamePlayer {
         return false;
     }
 
-    public List<GamePlayer> getKillTargets() {
+    public List<Player> getKillTargets() {
         return killTargets;
     }
 
     /**
      * 殺害対象リストにプレイヤーを追加します
-     * @param player: 追加するプレイヤー
+     * @param target: 追加するプレイヤー
      * @param isDisplay: 表示リストに追加するか
      */
-    public void addKillTarget(Player player, boolean isDisplay) {
-        if (isExist(player)) {
+    public void addKillTarget(Player target, boolean isDisplay) {
+        if (isExistOnParticipants(target)) {
             return;
         }
 
-        GamePlayer gamePlayer = findByPlayer(player);
-        this.killTargets.add(gamePlayer);
+        this.killTargets.add(target);
         if(isDisplay) {
-            displayKillTargets.add(gamePlayer);
+            displayKillTargets.add(target);
         }
     }
 
     /**
      * プレイヤーが殺害対象に含まれているか確認します。
-     * @param player: 調べるプレイヤー
+     * @param target: 調べるプレイヤー
      * @return 含まれるか
      */
-    public boolean isExistOnKillTarget(Player player) {
-        for(GamePlayer gamePlayer: killTargets) {
-            if(gamePlayer.getPlayer().equals(player)) {
+    public boolean isExistOnKillTarget(Player target) {
+        for(Player player: killTargets) {
+            if(player.getUniqueId().equals(target.getUniqueId())) {
                 return true;
             }
         }
@@ -227,31 +204,30 @@ public class GamePlayer {
         return false;
     }
 
-    public List<GamePlayer> getDisplayKillTargets() {
+    public List<Player> getDisplayKillTargets() {
         return displayKillTargets;
     }
 
     /**
      * 殺害対象の表示リストにプレイヤーを追加します
-     * @param player: 追加するプレイヤー
+     * @param target: 追加するプレイヤー
      */
-    public void addDisplayKillTarget(Player player) {
-        if (isExist(player)) {
+    public void addDisplayKillTarget(Player target) {
+        if (isExistOnParticipants(target)) {
             return;
         }
 
-        GamePlayer gamePlayer = findByPlayer(player);
-        this.displayKillTargets.add(gamePlayer);
+        this.displayKillTargets.add(target);
     }
 
     /**
      * プレイヤーが殺害対象に含まれているか確認します。
-     * @param player: 調べるプレイヤー
+     * @param target: 調べるプレイヤー
      * @return 含まれるか
      */
-    public boolean isExistOnDisplayKillTarget(Player player) {
-        for(GamePlayer gamePlayer: displayKillTargets) {
-            if(gamePlayer.getPlayer().equals(player)) {
+    public boolean isExistOnDisplayKillTarget(Player target) {
+        for(Player player: displayKillTargets) {
+            if(player.getUniqueId().equals(target.getUniqueId())) {
                 return true;
             }
         }
