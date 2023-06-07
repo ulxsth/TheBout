@@ -2,7 +2,6 @@ package com.ulxsth.thebout.models;
 
 import org.bukkit.entity.Player;
 
-import java.sql.Array;
 import java.util.*;
 
 
@@ -116,6 +115,9 @@ public class GamePlayer {
         return participants;
     }
 
+    public static void clear() {
+        participants.clear();
+    }
 
     public Player getPlayer() {
         return player;
